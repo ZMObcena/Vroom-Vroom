@@ -26,7 +26,7 @@ public class PrometeoCarController : MonoBehaviour
       public int maxSpeed = 150; //The maximum speed that the car can reach in km/h.
       [Range(10, 120)]
       public int maxReverseSpeed = 45; //The maximum speed that the car can reach while going on reverse in km/h.
-      [Range(1, 10)]
+      [Range(1, 20)]
       public int accelerationMultiplier = 2; // How fast the car can accelerate. 1 is a slow acceleration and 10 is the fastest.
       [Space(10)]
       [Range(10, 45)]
@@ -263,7 +263,7 @@ public class PrometeoCarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
 
       //CAR DATA
@@ -373,15 +373,20 @@ public class PrometeoCarController : MonoBehaviour
 
     // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
     public void CarSpeedUI(){
-
       if(useUI){
-          try{
-            float absoluteCarSpeed = Mathf.Abs(carSpeed);
-            carSpeedText.text = Mathf.RoundToInt(absoluteCarSpeed).ToString();
-          }catch(Exception ex){
-            Debug.LogWarning(ex);
-          }
-      }
+            /*
+              try{
+                float absoluteCarSpeed = Mathf.Abs(carSpeed);
+                carSpeedText.text = Mathf.RoundToInt(absoluteCarSpeed).ToString();
+              }catch(Exception ex){
+                Debug.LogWarning(ex);
+              }
+            */
+            Rigidbody rigidbody = GetComponent<Rigidbody>();
+            float speed = Vector3.Magnitude(rigidbody.velocity);
+            carSpeedText.text = Mathf.RoundToInt(speed).ToString();
+            //*/
+        }
 
     }
 
@@ -499,7 +504,8 @@ public class PrometeoCarController : MonoBehaviour
     public void GoForward(){
       //If the forces aplied to the rigidbody in the 'x' asis are greater than
       //3f, it means that the car is losing traction, then the car will start emitting particle systems.
-      if(Mathf.Abs(localVelocityX) > 2.5f){
+      if(Mathf.Abs(localVelocityX) > 500.0f){
+            Debug.Log("Losing Traction");
         isDrifting = true;
         DriftCarPS();
       }else{
@@ -701,7 +707,7 @@ public class PrometeoCarController : MonoBehaviour
         }
 
         try{
-          if((isTractionLocked || Mathf.Abs(localVelocityX) > 5f) && Mathf.Abs(carSpeed) > 12f){
+          if((isTractionLocked || Mathf.Abs(localVelocityX) > 500f) && Mathf.Abs(carSpeed) > 300f){
             RLWTireSkid.emitting = true;
             RRWTireSkid.emitting = true;
           }else {
