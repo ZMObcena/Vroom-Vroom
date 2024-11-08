@@ -29,6 +29,6 @@ public class Timer : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("test");
-        startTimer = true;
+        startTimer = !startTimer;
     }
 }
